@@ -1,3 +1,5 @@
+# https://www.youtube.com/watch?v=O5v4NrSCw_A&index=10&list=PLQVvvaa0QuDc-3szzjeP6N6b0aDrrKyL-
+
 import quandl
 import pandas as pd
 import pickle
@@ -41,20 +43,25 @@ def HPI_Benchmark():
 
 #grab_initial_state_data()
 
-# fig = plt.figure()
-# ax1 = plt.subplot2grid((1,1),(0,0))
+fig = plt.figure()
+ax1 = plt.subplot2grid((1,1),(0,0))
 
 
 HPI_data = pd.read_pickle('fiddy_states3.pickle')
 
-# benchmark = HPI_Benchmark()
+HPI_data['TX1yr'] = HPI_data['TX'].resample('A', how='mean')
 
-# HPI_data.plot(ax = ax1)
-# benchmark.plot(ax = ax1, color='k', linewidth=10)
+print(HPI_data[['TX','TX1yr']].head())
+# HPI_data.dropna(how='all',inplace=True)
+# HPI_data.fillna(method='bfill',inplace=True)
+HPI_data.fillna(value=-99999,limit=10,inplace=True)
+print(HPI_data[['TX','TX1yr']].head())
 
-# plt.legend().remove()
-# plt.show()
+print(HPI_data.isnull().values.sum())
 
-HPI_State_Correlation = HPI_data.corr()
-print(HPI_State_Correlation)
-print(HPI_State_Correlation.describe())
+
+HPI_data[['TX','TX1yr']].plot(ax = ax1)
+
+
+plt.legend(loc=4)
+plt.show()

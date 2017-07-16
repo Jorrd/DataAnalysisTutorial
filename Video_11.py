@@ -1,3 +1,6 @@
+# https://www.youtube.com/watch?v=FRzfD1FtrsQ&list=PLQVvvaa0QuDc-3szzjeP6N6b0aDrrKyL-&index=11 
+
+
 import quandl
 import pandas as pd
 import pickle
@@ -41,20 +44,25 @@ def HPI_Benchmark():
 
 #grab_initial_state_data()
 
-# fig = plt.figure()
-# ax1 = plt.subplot2grid((1,1),(0,0))
-
+fig = plt.figure()
+ax1 = plt.subplot2grid((2,1),(0,0))
+ax2 = plt.subplot2grid((2,1),(1,0),sharex=ax1)
 
 HPI_data = pd.read_pickle('fiddy_states3.pickle')
+# HPI_data['TX12MA'] = pd.rolling_mean(HPI_data['TX'], 12)
+# HPI_data['TX12STD'] = pd.rolling_std(HPI_data['TX'], 12)
+# print(HPI_data[['TX','TX12MA']].head())
 
-# benchmark = HPI_Benchmark()
+# HPI_data[['TX','TX12MA']].plot(ax = ax1)
+# HPI_data['TX12STD'].plot(ax = ax2)
 
-# HPI_data.plot(ax = ax1)
-# benchmark.plot(ax = ax1, color='k', linewidth=10)
+TX_AK_12corr = pd.rolling_corr(HPI_data['TX'], HPI_data['AK'], 12)
 
-# plt.legend().remove()
-# plt.show()
+HPI_data['TX'].plot(ax = ax1, label='TX HPI')
+HPI_data['AK'].plot(ax = ax1, label='AK HPI')
+ax1.legend(loc=4)
 
-HPI_State_Correlation = HPI_data.corr()
-print(HPI_State_Correlation)
-print(HPI_State_Correlation.describe())
+TX_AK_12corr.plot(ax=ax2, label='TX_AK_12corr')
+
+plt.legend(loc=4)
+plt.show()

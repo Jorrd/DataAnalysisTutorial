@@ -41,20 +41,18 @@ def HPI_Benchmark():
 
 #grab_initial_state_data()
 
-# fig = plt.figure()
-# ax1 = plt.subplot2grid((1,1),(0,0))
+fig = plt.figure()
+ax1 = plt.subplot2grid((1,1),(0,0))
 
 
 HPI_data = pd.read_pickle('fiddy_states3.pickle')
 
-# benchmark = HPI_Benchmark()
+TX1yr = HPI_data['TX'].resample('A', how='ohlc')
+print(TX1yr.head())
 
-# HPI_data.plot(ax = ax1)
-# benchmark.plot(ax = ax1, color='k', linewidth=10)
+HPI_data['TX'].plot(ax = ax1, label='Monthly TX HPI')
+TX1yr.plot(ax = ax1, label='Yearly TX HPI')
 
-# plt.legend().remove()
-# plt.show()
 
-HPI_State_Correlation = HPI_data.corr()
-print(HPI_State_Correlation)
-print(HPI_State_Correlation.describe())
+plt.legend(loc=4)
+plt.show()

@@ -1,9 +1,19 @@
+# https://www.youtube.com/watch?v=FvamL5oA_EE&list=PLQVvvaa0QuDc-3szzjeP6N6b0aDrrKyL-&index=13
+
 import quandl
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 from matplotlib import style
 style.use('fivethirtyeight')
+
+def mortgage_30y():
+	df = quandl.get("FMAC/MORTG", trim_start="1975-01-01", authtoken="HsXsy_dUq9xsVwMgHEg4")
+	df["Value"] = (df["Value"] - df["Value"][0]) / df["Value"][0] * 100.0
+	df = df.resample('M').mean()
+	df.columns = ['M30']
+	return df
+
 
 def state_list():
     fiddy_states = pd.read_html('https://simple.wikipedia.org/wiki/List_of_U.S._states')
@@ -36,25 +46,16 @@ def grab_initial_state_data():
 def HPI_Benchmark():
     df = quandl.get("FMAC/HPI_USA", authtoken="HsXsy_dUq9xsVwMgHEg4")
     df["Value"] = (df["Value"] - df["Value"][0]) / df["Value"][0] * 100.0
-    #df.rename(columns={'Value':"United States (NSA)"}, inplace=True)
     return df
 
-#grab_initial_state_data()
-
-# fig = plt.figure()
-# ax1 = plt.subplot2grid((1,1),(0,0))
-
-
+m30 = mortgage_30y()
 HPI_data = pd.read_pickle('fiddy_states3.pickle')
+HPI_bench = HPI_Benchmark()
 
-# benchmark = HPI_Benchmark()
+state_HPI_M30 = HPI_data.join(m30)
 
-# HPI_data.plot(ax = ax1)
-# benchmark.plot(ax = ax1, color='k', linewidth=10)
+print(state_HPI_M30.corr()['M30'].describe())
 
-# plt.legend().remove()
-# plt.show()
 
-HPI_State_Correlation = HPI_data.corr()
-print(HPI_State_Correlation)
-print(HPI_State_Correlation.describe())
+#print(HPI_data.head())
+
